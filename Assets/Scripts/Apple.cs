@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class Apple : MonoBehaviour
 {
-    private SpriteRenderer _spriteRenderer;
+    private SpriteRenderer sr;
 
-    private CircleCollider2D _circleCollider2D;
+    private CircleCollider2D circle;
 
     public GameObject collected;
 
@@ -15,18 +15,18 @@ public class Apple : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        _circleCollider2D = GetComponent<CircleCollider2D>();
+        sr = GetComponent<SpriteRenderer>();
+        circle = GetComponent<CircleCollider2D>();
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.tag == "Player")
         {
-            _spriteRenderer.enabled = false;
-            _circleCollider2D.enabled = false;
-            collected.SetActive(true);
-            GameController.instance.totalScore += Score;
-           GameController.instance.UpdateScoreText();
+             sr.enabled = false;
+             circle.enabled = false;
+             collected.SetActive(true);
+           //  GameController.instance.totalScore += Score;
+           // GameController.instance.UpdateScoreText();
            Destroy(gameObject,0.2f);
         }
     }

@@ -23,8 +23,8 @@ public class CameraMovimento : MonoBehaviour
             positionY = 0f;
         if (player.position.y > 1.4f && player.position.y < 5f)
             positionY = player.position.y - 1f;
-        if (player.position.y > 8f)
-            positionY = 8f;
+        if (player.position.y >= 8.5f)
+            positionY = 8.5f;
 
         if (player.position.x >= 41f)
             positionX = 41f;
