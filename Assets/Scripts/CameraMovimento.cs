@@ -30,6 +30,8 @@ public class CameraMovimento : MonoBehaviour
             positionX = 41f;
         else if (player.position.x < 41f)
             positionX = player.position.x;
+         if (player.position.x <= -1f)
+            positionX = -1f;
         
         startPosition = new Vector3(positionX, positionY, -1f);
         transform.position = Vector3.Lerp(transform.position, startPosition, smoothSpeed);

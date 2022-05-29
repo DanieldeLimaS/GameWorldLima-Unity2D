@@ -13,13 +13,13 @@ public class Player : MonoBehaviour
     public bool doubleJump;
 
     public Rigidbody2D rdb2D;
-    private Animator _animator;
+    private Animator animator;
 
     // Start is called before the first frame update
     void Start()
     {
         rdb2D = GetComponent<Rigidbody2D>();
-        _animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -36,17 +36,17 @@ public class Player : MonoBehaviour
 
         if (Input.GetAxis("Horizontal") > 0f)  //player andando para Direira
         {
-            _animator.SetBool("Andando", true);
+            animator.SetBool("Andando", true);
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
         }
         if (Input.GetAxis("Horizontal") < 0f)  //player andando para Esquerda
         {
-            _animator.SetBool("Andando", true);
+            animator.SetBool("Andando", true);
             transform.eulerAngles = new Vector3(0f, -180f, 0f);
         }
         if (Input.GetAxis("Horizontal") == 0f) 
         {
-            _animator.SetBool("Andando", false);
+            animator.SetBool("Andando", false);
         }
     }
 
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour
             {
                 rdb2D.AddForce(new Vector2(0f, JumpForce * 1.19f), ForceMode2D.Impulse);
                 doubleJump = true;
-                _animator.SetBool("Pulando",true);
+                animator.SetBool("Pulando",true);
             }
             else if (doubleJump)
             {
@@ -68,12 +68,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D col)
+    void OnCollisionEnter2D(Collision2D col)//detecta toda vez que o player bate em algo
     {
         if (col.gameObject.layer == 6)
         {
             isJumping = false;
-            _animator.SetBool("Pulando",false);
+            animator.SetBool("Pulando",false);
+        }
+        if (col.gameObject.tag == "Espinho")
+        {
+          Debug.Log("Tocou no espinho");
         }
     }
 
