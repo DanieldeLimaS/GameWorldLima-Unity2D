@@ -25,8 +25,9 @@ public class Apple : MonoBehaviour
              sr.enabled = false;
              circle.enabled = false;
              collected.SetActive(true);
-             GameController.instance.totalScore += Score;
-            GameController.instance.UpdateScoreText();
+             GameController.Instance.totalScoreTela += Score;
+             GameController.totalScoreGeral += Score;
+            GameController.Instance.UpdateScoreText();
            Destroy(gameObject,0.2f);
         }
     }

@@ -1,25 +1,24 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Player : MonoBehaviour
 {
-    public float Speed;
-    public float JumpForce;
+    [FormerlySerializedAs("Speed")] public float speed;
+    [FormerlySerializedAs("JumpForce")] public float jumpForce;
 
     public bool isJumping;
     public bool doubleJump;
 
     public Rigidbody2D rdb2D;
-    private Animator animator;
+    private Animator _animator;
+    private static readonly int Andando = Animator.StringToHash("Andando");
+    private static readonly int Pulando = Animator.StringToHash("Pulando");
 
     // Start is called before the first frame update
     void Start()
     {
         rdb2D = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -31,22 +30,24 @@ public class Player : MonoBehaviour
 
     void Move()
     {
-        Vector3 movimento = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
-        transform.position += movimento * (Time.deltaTime * Speed);
+        Vector3 movement = new Vector3(Input.GetAxis("Horizontal"), 0f, 0f);
+        transform.position += movement * (Time.deltaTime * speed);
 
-        if (Input.GetAxis("Horizontal") > 0f)  //player andando para Direira
+        if (Input.GetAxis("Horizontal") > 0f) //player andando para direita
         {
-            animator.SetBool("Andando", true);
+            _animator.SetBool(Andando, true);
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
         }
-        if (Input.GetAxis("Horizontal") < 0f)  //player andando para Esquerda
+
+        if (Input.GetAxis("Horizontal") < 0f) //player andando para Esquerda
         {
-            animator.SetBool("Andando", true);
+            _animator.SetBool(Andando, true);
             transform.eulerAngles = new Vector3(0f, -180f, 0f);
         }
-        if (Input.GetAxis("Horizontal") == 0f) 
+
+        if (Input.GetAxis("Horizontal") == 0f)
         {
-            animator.SetBool("Andando", false);
+            _animator.SetBool(Andando, false);
         }
     }
 
@@ -56,28 +57,40 @@ public class Player : MonoBehaviour
         {
             if (!isJumping)
             {
-                rdb2D.AddForce(new Vector2(0f, JumpForce * 1.19f), ForceMode2D.Impulse);
+                rdb2D.AddForce(new Vector2(0f, jumpForce * 1.19f), ForceMode2D.Impulse);
                 doubleJump = true;
-                animator.SetBool("Pulando",true);
+                _animator.SetBool(Pulando, true);
             }
             else if (doubleJump)
             {
-                rdb2D.AddForce(new Vector2(0f, JumpForce / 2.5f), ForceMode2D.Impulse);
+                rdb2D.AddForce(new Vector2(0f, jumpForce / 2f), ForceMode2D.Impulse);
                 doubleJump = false;
             }
         }
     }
 
-    void OnCollisionEnter2D(Collision2D col)//detecta toda vez que o player bate em algo
+    void OnCollisionEnter2D(Collision2D col) //detecta toda vez que o player bate em algo
     {
         if (col.gameObject.layer == 6)
         {
             isJumping = false;
-            animator.SetBool("Pulando",false);
+            _animator.SetBool(Pulando, false);
         }
-        if (col.gameObject.tag == "Espinho")
+
+        if (col.gameObject.CompareTag("Espinho"))
         {
-          Debug.Log("Tocou no espinho");
+           GameController.Instance.ShowGameOver();
+           Destroy(gameObject);
+        }
+        if (col.gameObject.CompareTag("Player"))
+        {
+           col.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(0f,jumpForce),ForceMode2D.Impulse);
+           _animator.SetTrigger("Pulo");
+        }
+        if (col.gameObject.CompareTag("Ganhou"))
+        {
+            GameController.Instance.ShowWinner();
+            Destroy(gameObject);
         }
     }
 
